@@ -57,9 +57,9 @@
 <body>
 	<!-- 2 构建内容区（舞台） -->
 	<section class="stage">
-		<section class="img-sec">
+		<section class="img-sec" id="img-sec">
 			<!-- 3 构建图片区 -->
-			 
+			<!--  
 			<figure class="img-figure">
 				<img src="images/1.jpg" title="第一张图片">
 				<figcaption>
@@ -69,7 +69,7 @@
 					</div>
 				</figcaption>
 			</figure> 
-			
+			 -->
 		</section>
 		<nav class="controller-nav">
 			
@@ -79,7 +79,43 @@
 	<!-- 1 构建imageDatas -->
 	<script type="text/javascript" src="data/imageDatas.js"></script>
 	<script type="text/javascript">
-		
+		/*4 载入图片
+		 * 自执行函数
+		 * @param imageDatas
+   		 * @return figuresArr数组和动态构建的img-figure的html结构
+		 */
+		var figuresArr=(function loadImg(imageDatas) {
+
+			var figuresArr=[],
+				imgSec=document.getElementById('img-sec');
+			imageDatas.forEach(function(imgData){
+
+				var figureEle=document.createElement('figure');
+				figureEle.className="img-figure";
+
+				var imgEle=document.createElement('img');
+				imgEle.src="images/"+imgData.fileName;
+				imgEle.title=imgData.title;
+
+				var figCapEle=document.createElement('figcaption');
+				var h2Ele=document.createElement('h2');
+				h2Ele.innerText=imgData.title;
+
+				var divEle=document.createElement('div');
+				var pEle=document.createElement('p');
+				pEle.innerText=imgData.desc;
+
+				divEle.appendChild(pEle);
+				figCapEle.appendChild(h2Ele);
+				figCapEle.appendChild(divEle);
+				figureEle.appendChild(imgEle);
+				figureEle.appendChild(figCapEle);
+				imgSec.appendChild(figureEle);
+
+				figuresArr.push(figureEle);
+			});
+			return figuresArr;
+		})(imageDatas);
 	</script>
 </body>
 </html>
