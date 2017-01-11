@@ -1,9 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>国网泰安第四期非电9班培训-画廊</title>
+	<link rel="stylesheet" type="text/css" href="css/normalize.css">
+	<style type="text/css">
+		/*2 舞台区样式*/
+		html,body{
+			width: 100%;
+			height: 100%;
+			background-color: #222/**/
+		}
+		.stage{
+			width: 100%;
+			height: 680px;/**/
+			position: relative;
+		}
+		.img-sec{
+			width: 100%;
+			height: 100%;
+			position: relative;/**/
+			overflow: hidden;
+			background-color: #ddd
+		}
+		.controller-nav{
+			width: 100%;
+			position: absolute;
+			left: 0;
+			bottom: 30px;
+			z-index: 101;
+			text-align: center;
+		}
+
+		/*3 图片区样式*/
+		.img-figure{
+			width: 320px;
+			height: 360px;
+			margin: 0;
+			padding: 40px;
+			box-sizing: border-box;
+			background-color: #fff;
+		}
+		.img-figure figcaption{
+			text-align: center;
+		}
+		.img-title{
+			margin: 20px 0 0 0;/**/
+			font-size: 16px;/*h2?*/
+			color: #a7a0a2;
+		}
+		.img-back{
+			
+		}
+	</style>
 </head>
 <body>
+	<!-- 2 构建内容区（舞台） -->
+	<section class="stage">
+		<section class="img-sec">
+			<!-- 3 构建图片区 -->
+			 
+			<figure class="img-figure">
+				<img src="images/1.jpg" title="第一张图片">
+				<figcaption>
+					<h2 class="img-title">第一张图片</h2>
+					<div class="img-back">
+						<p>第一张图片的描述</p>
+					</div>
+				</figcaption>
+			</figure> 
+			
+		</section>
+		<nav class="controller-nav">
+			
+		</nav>
+	</section>
 
+	<!-- 1 构建imageDatas -->
+	<script type="text/javascript" src="data/imageDatas.js"></script>
+	<script type="text/javascript">
+		
+	</script>
 </body>
 </html>
