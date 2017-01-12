@@ -40,6 +40,8 @@
 			padding: 40px;
 			box-sizing: border-box;
 			background-color: #fff;
+
+			position: absolute;
 		}
 		.img-figure figcaption{
 			text-align: center;
@@ -56,7 +58,7 @@
 </head>
 <body>
 	<!-- 2 构建内容区（舞台） -->
-	<section class="stage">
+	<section class="stage" id="stage">
 		<section class="img-sec" id="img-sec">
 			<!-- 3 构建图片区 -->
 			<!--  
@@ -88,6 +90,7 @@
 
 			var figuresArr=[],
 				imgSec=document.getElementById('img-sec');
+
 			imageDatas.forEach(function(imgData){
 
 				var figureEle=document.createElement('figure');
@@ -115,7 +118,113 @@
 				figuresArr.push(figureEle);
 			});
 			return figuresArr;
+
 		})(imageDatas);
+
+		/*5 图片（figure）定位
+		 *	分为三类：居中的1个、上部的0或1个、左右的剩余各一半
+		 */
+		// 5.1 定位的可取值范围“参考”
+		var constant={
+			centerPos:{// 居中的 
+				left:0,
+				top:0
+			},
+			vPosRange:{// 上部的
+				x:[0,0],
+				topY:[0,0]
+			},
+			hPosRange:{// 左右的
+				leftSecX: [0, 0],
+		        rightSecX: [0, 0],
+		        y: [0, 0]
+			}
+		}
+		
+		// 5.2 赋值真正的取值范围
+		// 5.2.1 获得stage和imgFigure的宽和高
+		var stageDom=document.getElementById("stage"),
+			stageW=stageDom.scrollWidth,
+			stageH=stageDom.scrollHeight,
+			halfStageW=stageW/2,
+			halfStageH=stageH/2,
+
+			imgFigureDom=figuresArr[0],
+			imgFigureW=imgFigureDom.scrollWidth,
+			imgFigureH=imgFigureDom.scrollHeight,
+			halfimgFigureW=imgFigureW/2,
+			halfimgFigureH=imgFigureH/2;
+
+		// 5.2.2 计算可取值
+		constant.centerPos.left=halfStageW-halfimgFigureW;
+		constant.centerPos.top=halfStageH-halfimgFigureH;
+
+		constant.vPosRange.x[0]=halfStageW-imgFigureW;
+		constant.vPosRange.x[1]=halfStageW;
+		constant.vPosRange.topY[0]=-halfimgFigureH;
+		constant.vPosRange.topY[1]=halfStageH-halfimgFigureH*3
+
+		constant.hPosRange.leftSecX[0]=-halfimgFigureW;
+		constant.hPosRange.leftSecX[1]=halfStageW-halfimgFigureW*3;
+		constant.hPosRange.rightSecX[0]=halfStageW+halfimgFigureW
+		constant.hPosRange.rightSecX[1]=stageW-halfimgFigureW;
+		constant.hPosRange.y[0]=-halfimgFigureH;
+		constant.hPosRange.y[1]=stageH-halfimgFigureH;
+		
+		/* 5.3 布局所有图片（figure）的函数
+		 * 需先执行一遍
+		 * @param index,figuresArr
+		 */
+		function rearrange(centerIndex){
+			// 全局变量figuresArr和constant
+			
+			// “取出0张”居中图片
+			var figuresCenterArr=figuresArr.splice(centerIndex,1),
+				centerLeft=constant.centerPos.left,
+				centerTop=constant.centerPos.top;
+			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px';
+			/* 行内样式不是对象是字符串
+			 * {
+			 * 	left:constant.centerPos.left+'px',
+			 * 	top:constant.centerPos.top+'px'
+			 * };
+			 * 'left:'+centerLeft+'px;top:'+centerTop+'px';
+			 */
+
+			// “取出0到1张”上部图片
+			var topFigureNum=Math.floor(Math.random()*2),// 取一个或者不取
+				topFigureIndex=Math.ceil(Math.random()*(figuresArr.length-topFigureNum)),
+				figuresTopArr=figuresArr.splice(topFigureIndex,topFigureNum);
+			figuresTopArr.forEach(function(value,index){
+				var topLeft=getRangeRandom(constant.vPosRange.x[0],constant.vPosRange.x[1]),
+					topTop=getRangeRandom(constant.vPosRange.topY[0],constant.vPosRange.topY[1]);
+				figuresTopArr[index].style='left:'+topLeft+'px;top:'+topTop+'px';
+			});
+
+			// 左右两侧图片
+			for(var i=0,j=figuresArr.length,k=j/2;i<j;i++){
+				var asideLeft=0,
+					asideTop=getRangeRandom(constant.hPosRange.y[0],constant.hPosRange.y[1]);
+				if(i<k){
+					asideLeft=getRangeRandom(constant.hPosRange.leftSecX[0],constant.hPosRange.leftSecX[1]);
+				}else{
+					asideLeft=getRangeRandom(constant.hPosRange.rightSecX[0],constant.hPosRange.rightSecX[1]);
+				}
+				figuresArr[i].style='left:'+asideLeft+'px;top:'+asideTop+'px';
+			}
+
+			// “合并”所有图片
+			if(figuresTopArr[0]){
+				figuresArr.splice(topFigureIndex,0,figuresTopArr[0]);
+			}
+			figuresArr.splice(centerIndex,0,figuresCenterArr[0]);
+		}
+		rearrange(0);
+
+		// 6 获取区间内的一个随机值
+		function getRangeRandom(low,high){
+			return Math.floor(Math.random()*(high-low)+low)
+		}
 	</script>
 </body>
 </html>
