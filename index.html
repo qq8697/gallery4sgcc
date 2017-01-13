@@ -181,24 +181,34 @@
 			// “取出0张”居中图片
 			var figuresCenterArr=figuresArr.splice(centerIndex,1),
 				centerLeft=constant.centerPos.left,
-				centerTop=constant.centerPos.top;
-			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px';
-			/* 行内样式不是对象是字符串
-			 * {
-			 * 	left:constant.centerPos.left+'px',
-			 * 	top:constant.centerPos.top+'px'
+				centerTop=constant.centerPos.top,
+				centerRotate=0;
+				
+			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px;transform:rotate('+centerRotate+'deg)';
+
+			/* 如下三种情况，行内样式赋值给一个对象（x）;赋值给字符串（√）；依次给属性赋值（√）。
+			 * figuresCenterArr[0].style={
+			 * 	left:centerLeft+'px',
+			 * 	top:centerTop+'px'
 			 * };
-			 * 'left:'+centerLeft+'px;top:'+centerTop+'px';
+			 *
+			 * figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px';
+			 *
+			 * figuresCenterArr[0].style.left=centerLeft+'px';
+			 * figuresCenterArr[0].style.top=centerTop+'px';
 			 */
 
 			// “取出0到1张”上部图片
 			var topFigureNum=Math.floor(Math.random()*2),// 取一个或者不取
 				topFigureIndex=Math.ceil(Math.random()*(figuresArr.length-topFigureNum)),
 				figuresTopArr=figuresArr.splice(topFigureIndex,topFigureNum);
+
 			figuresTopArr.forEach(function(value,index){
 				var topLeft=getRangeRandom(constant.vPosRange.x[0],constant.vPosRange.x[1]),
-					topTop=getRangeRandom(constant.vPosRange.topY[0],constant.vPosRange.topY[1]);
-				figuresTopArr[index].style='left:'+topLeft+'px;top:'+topTop+'px';
+					topTop=getRangeRandom(constant.vPosRange.topY[0],constant.vPosRange.topY[1]),
+					topRotate=get30DegRandom();
+
+				figuresTopArr[index].style='left:'+topLeft+'px;top:'+topTop+'px;transform:rotate('+topRotate+'deg)';
 			});
 
 			// 左右两侧图片
@@ -210,7 +220,9 @@
 				}else{
 					asideLeft=getRangeRandom(constant.hPosRange.rightSecX[0],constant.hPosRange.rightSecX[1]);
 				}
-				figuresArr[i].style='left:'+asideLeft+'px;top:'+asideTop+'px';
+				asideRotate=get30DegRandom();
+
+				figuresArr[i].style='left:'+asideLeft+'px;top:'+asideTop+'px;transform:rotate('+asideRotate+'deg)';
 			}
 
 			// “合并”所有图片
@@ -224,6 +236,13 @@
 		// 6 获取区间内的一个随机值
 		function getRangeRandom(low,high){
 			return Math.floor(Math.random()*(high-low)+low)
+		}
+
+		/* 7 图片旋转
+		 * 获取 0~30° 之间的一个任意正负值
+		 */
+		function get30DegRandom(){
+			return (Math.random()>0.5?'':'-')+Math.floor(Math.random()*30);
 		}
 	</script>
 </body>
