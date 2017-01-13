@@ -9,17 +9,17 @@
 		html,body{
 			width: 100%;
 			height: 100%;
-			background-color: #222/**/
+			background-color: #222
 		}
 		.stage{
 			width: 100%;
-			height: 680px;/**/
+			height: 100%;
 			position: relative;
 		}
 		.img-sec{
 			width: 100%;
 			height: 100%;
-			position: relative;/**/
+			position: relative;
 			overflow: hidden;
 			background-color: #ddd
 		}
@@ -46,13 +46,32 @@
 		.img-figure figcaption{
 			text-align: center;
 		}
-		.img-title{
-			margin: 20px 0 0 0;/**/
-			font-size: 16px;/*h2?*/
+		.img-figure figcaption .img-title{
+			margin: 20px 0 0 0;
+			font-size: 16px;
 			color: #a7a0a2;
 		}
-		.img-back{
-			
+
+		/*8.1 翻转样式*/
+		.img-figure figcaption .img-back{
+			position: absolute;
+			top: 0;
+			left: 0;
+
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+			overflow: auto;
+			padding: 50px 40px;
+
+			color: #a7a0a2;
+            font-size: 22px;
+            line-height: 1.25;
+            text-align: left;
+            background-color: #fff;
+
+            transform: rotateY(180deg);/*8.1.1背面描述 沿着Y轴（竖轴）旋转180deg*/
+            backface-visibility: hidden;
 		}
 	</style>
 </head>
@@ -102,9 +121,12 @@
 
 				var figCapEle=document.createElement('figcaption');
 				var h2Ele=document.createElement('h2');
+				h2Ele.className="img-title";
 				h2Ele.innerText=imgData.title;
 
 				var divEle=document.createElement('div');
+				divEle.className="img-back";
+
 				var pEle=document.createElement('p');
 				pEle.innerText=imgData.desc;
 
@@ -183,7 +205,7 @@
 				centerLeft=constant.centerPos.left,
 				centerTop=constant.centerPos.top,
 				centerRotate=0;
-				
+
 			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px;transform:rotate('+centerRotate+'deg)';
 
 			/* 如下三种情况，行内样式赋值给一个对象（x）;赋值给字符串（√）；依次给属性赋值（√）。
@@ -244,6 +266,13 @@
 		function get30DegRandom(){
 			return (Math.random()>0.5?'':'-')+Math.floor(Math.random()*30);
 		}
+
+		/* 8 翻转图片
+		 * 翻转状态：isInverse
+		 * 翻转样式：is-invers
+	     * @param index
+	     * @returns 修改图片的翻转状态和样式
+	     */
 	</script>
 </body>
 </html>
