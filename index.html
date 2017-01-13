@@ -52,7 +52,7 @@
 			color: #a7a0a2;
 		}
 
-		/*8.1 翻转样式*/
+		/*8.1 翻转效果样式*/
 		.img-figure{
 			transform-style: preserve-3d;/*8.1.2 子元素（.img-back）将保留其3D位置*/
 			cursor: pointer;
@@ -274,12 +274,77 @@
 			return (Math.random()>0.5?'':'-')+Math.floor(Math.random()*30);
 		}
 
-		/* 8 翻转图片
-		 * 翻转状态：isInverse
-		 * 翻转样式：is-invers
-	     * @param index
-	     * @returns 修改图片的翻转状态和样式
+		/* 8 点击图片 使其居中或翻转
+		 * （居中状态：isCenter）
+		 * （翻转状态：isInverse 翻转样式：is-inverse）
+	     *  状态的管理 +_+
 	     */
+
+	    // 8.2.1 绑定clickHandler函数与初始化isCenter和isInverse状态
+	    figuresArr.forEach(function(value,index){
+	    	if(index==0){
+	    		value.setAttribute('iscenter','true');
+	    		/*设置非标准html属性使用setAttribute()方法，
+	    		 *且key应为小写（大写会自动转换为小写）。
+	    		 */
+	    	}else{
+	    		value.setAttribute('iscenter','false');
+	    	}
+	    	value.setAttribute('isinverse','false');
+
+	    	value.addEventListener("click",imgClickHandler,'false');
+	    });
+
+	    // 8.2.2 
+	     function imgClickHandler(e){
+	     	/*事件处理函数的默认参数是event，所以绑定事件监听时不能传入参数，如index，
+	     	 *index可以由array.indexOf(ele)获取
+	     	 */
+	    	var index=figuresArr.indexOf(this);
+
+	    	// 如果居中-->翻转
+	    	if(this.getAttribute('iscenter')=='true'){
+	    	/*setAttribute('iscenter',true);
+	    	 *getAttribute('iscenter')=='true'
+	    	 */
+	    		inverse(index);
+	    	}else{
+	    	//如果不居中-->居中
+	    		center(index);
+	    	}
+	    	e.preventDefault();
+	    	e.stopPropagation();
+	    }
+
+	    // 居中函数
+	    function center(index){
+	    	/* 先设置“所有”都不居中，再单独设置“指定的”居中，因为“原来”居中状态的元素较难找到。
+	    	 */
+	    	figuresArr.forEach(function(value){
+	    		value.setAttribute('iscenter','false');
+	    	});
+	    	figuresArr[index].setAttribute('iscenter','true');
+
+	    	rearrange(index);
+	    };
+
+	    // 翻转函数
+	    function inverse(index){
+	    	var imgFigureClassName='img-figure';
+
+	    	// isinverse==false表示正面
+	    	if(figuresArr[index].getAttribute('isinverse')=='false'){
+	    		figuresArr[index].className=imgFigureClassName+" is-inverse";
+	    		figuresArr[index].setAttribute('isinverse','true');
+	    	}else{
+	    		figuresArr[index].className=imgFigureClassName;
+	    		figuresArr[index].setAttribute('isinverse','false');
+	    	}
+	    	/*html非标准属性不能以.或[]的方式获取
+	    	 *figuresArr[index].isinverse=!figuresArr[index].isinverse
+	    	 */
+	    }
+
 	</script>
 </body>
 </html>
