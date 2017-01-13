@@ -53,6 +53,13 @@
 		}
 
 		/*8.1 翻转样式*/
+		.img-figure{
+			transform-style: preserve-3d;/*8.1.2 子元素（.img-back）将保留其3D位置*/
+			cursor: pointer;
+		}
+		.img-figure.is-inverse{
+			transform: rotateY(180deg);
+		}
 		.img-figure figcaption .img-back{
 			position: absolute;
 			top: 0;
@@ -70,7 +77,7 @@
             text-align: left;
             background-color: #fff;
 
-            transform: rotateY(180deg);/*8.1.1背面描述 沿着Y轴（竖轴）旋转180deg*/
+            transform: rotateY(180deg);/*8.1.1 "背面描述"的效果 沿着Y轴（竖轴）旋转180deg*/
             backface-visibility: hidden;
 		}
 	</style>
@@ -203,10 +210,10 @@
 			// “取出0张”居中图片
 			var figuresCenterArr=figuresArr.splice(centerIndex,1),
 				centerLeft=constant.centerPos.left,
-				centerTop=constant.centerPos.top,
-				centerRotate=0;
+				centerTop=constant.centerPos.top;
+				// centerRotate=0; 8.1.3 .img-figure要rotateY(180deg)所以这里不能rotate(0deg)
 
-			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px;transform:rotate('+centerRotate+'deg)';
+			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px';
 
 			/* 如下三种情况，行内样式赋值给一个对象（x）;赋值给字符串（√）；依次给属性赋值（√）。
 			 * figuresCenterArr[0].style={
