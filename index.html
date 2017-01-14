@@ -80,6 +80,7 @@
             transform: rotateY(180deg);/*8.1.1 "背面描述"的效果 沿着Y轴（竖轴）旋转180deg*/
             backface-visibility: hidden;
 		}
+		/*10 动画效果*/
 	</style>
 </head>
 <body>
@@ -213,6 +214,7 @@
 				centerTop=constant.centerPos.top;
 				// centerRotate=0; 8.1.3 .img-figure要rotateY(180deg)所以这里不能rotate(0deg)
 
+			/*9.1 居中图片要设置z-index值"突出"与其他图片，不能设置transform，同时使用会让z-index失效*/
 			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px';
 
 			/* 如下三种情况，行内样式赋值给一个对象（x）;赋值给字符串（√）；依次给属性赋值（√）。
@@ -277,7 +279,7 @@
 		/* 8 点击图片 使其居中或翻转
 		 * （居中状态：isCenter）
 		 * （翻转状态：isInverse 翻转样式：is-inverse）
-	     *  状态的管理 +_+
+	     *  状态的管理 +_+ 有点晕
 	     */
 
 	    // 8.2.1 绑定clickHandler函数与初始化isCenter和isInverse状态
@@ -317,15 +319,21 @@
 	    }
 
 	    // 居中函数
-	    function center(index){
+	    function center(centerIndex){
 	    	/* 先设置“所有”都不居中，再单独设置“指定的”居中，因为“原来”居中状态的元素较难找到。
 	    	 */
-	    	figuresArr.forEach(function(value){
-	    		value.setAttribute('iscenter','false');
+	    	figuresArr.forEach(function(value,index){
+	    		if(index==centerIndex){
+	    			value.setAttribute('iscenter','true');
+	    			// 9 设置图片的z-index值，使居中图片“领先”与其余图片。
+	    			/*Tip：z-index和transform用于改变元素的堆叠顺序，同时使用会让z-index失效*/
+	    		}else{
+	    			value.setAttribute('iscenter','false');
+	    		}
 	    	});
-	    	figuresArr[index].setAttribute('iscenter','true');
-
-	    	rearrange(index);
+	    	rearrange(centerIndex);
+	    	/*9.2 调用rearrange函数重新布局后，居中的图片没有transform属性，再设置z-index属性让其“突出”*/
+	    	figuresArr[centerIndex].style.zIndex=11;
 	    };
 
 	    // 翻转函数
