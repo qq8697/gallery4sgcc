@@ -21,7 +21,12 @@
 			height: 100%;
 			position: relative;
 			overflow: hidden;
-			background-color: #ddd
+			background-color: #ddd;
+
+			/*10.3 优化旋转的3D效果
+			 *Tip 当为元素定义 perspective *属性时，其子元素会获得透视效果，而不是元素本身。
+			 */
+			perspective:1800px;
 		}
 		.controller-nav{
 			width: 100%;
@@ -56,9 +61,18 @@
 		.img-figure{
 			transform-style: preserve-3d;/*8.1.2 子元素（.img-back）将保留其3D位置*/
 			cursor: pointer;
+
+			/*10.1 动画的过渡属性*/
+			transition:left .6s ease-in-out,top .6s ease-in-out,transform .6s ease-in-out;
+
+			/*10.4 添加更立体的“倒”的效果=>改旋转原点+反面时平移回去
+			 *transform-origin设置旋转元素的基点位置，默认50% 50% 0
+			 *x=0 以y轴为轴 逆时针旋转
+			 */
+			transform-origin: 0 50% 0;
 		}
 		.img-figure.is-inverse{
-			transform: rotateY(180deg);
+			transform: translate(320px) rotateY(180deg);/*10.4.1 这两个顺序不一样，效果也会不一样*/
 		}
 		.img-figure figcaption .img-back{
 			position: absolute;
@@ -147,6 +161,12 @@
 
 				figuresArr.push(figureEle);
 			});
+
+			// 10.2 图片载入时给一个初始的布局位置left:0,top:0
+			figuresArr.forEach(function(value){
+				value.style='left:0;top:0';
+			});
+
 			return figuresArr;
 
 		})(imageDatas);
@@ -214,8 +234,9 @@
 				centerTop=constant.centerPos.top;
 				// centerRotate=0; 8.1.3 .img-figure要rotateY(180deg)所以这里不能rotate(0deg)
 
-			/*9.1 居中图片要设置z-index值"突出"与其他图片，不能设置transform，同时使用会让z-index失效*/
-			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px';
+			// 9 设置图片的z-index值，使居中图片“领先”与其余图片。
+	    	/*Tip：z-index和transform用于改变元素的堆叠顺序，同时使用会让z-index失效*/
+			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px;z-index:11';
 
 			/* 如下三种情况，行内样式赋值给一个对象（x）;赋值给字符串（√）；依次给属性赋值（√）。
 			 * figuresCenterArr[0].style={
@@ -325,15 +346,14 @@
 	    	figuresArr.forEach(function(value,index){
 	    		if(index==centerIndex){
 	    			value.setAttribute('iscenter','true');
-	    			// 9 设置图片的z-index值，使居中图片“领先”与其余图片。
-	    			/*Tip：z-index和transform用于改变元素的堆叠顺序，同时使用会让z-index失效*/
 	    		}else{
 	    			value.setAttribute('iscenter','false');
 	    		}
+	    		// 居中时重置所有的isinverse状态为false和删除is-inverse样式。
+	    		value.setAttribute('isinverse','false');
+	    		value.className='img-figure';
 	    	});
 	    	rearrange(centerIndex);
-	    	/*9.2 调用rearrange函数重新布局后，居中的图片没有transform属性，再设置z-index属性让其“突出”*/
-	    	figuresArr[centerIndex].style.zIndex=11;
 	    };
 
 	    // 翻转函数
@@ -352,7 +372,6 @@
 	    	 *figuresArr[index].isinverse=!figuresArr[index].isinverse
 	    	 */
 	    }
-
 	</script>
 </body>
 </html>
