@@ -24,9 +24,13 @@
 			background-color: #ddd;
 
 			/*10.3 优化旋转的3D效果
-			 *Tip 当为元素定义 perspective *属性时，其子元素会获得透视效果，而不是元素本身。
+			 *Tip 当为元素定义perspective属性时，其子元素会获得透视效果，而不是元素本身。
 			 */
 			perspective:1800px;
+			-webkit-perspective:1800px;
+			-o-perspective:1800px;
+			-moz-perspective:1800px;
+			-ms-perspective:1800px;
 		}
 		.controller-nav{
 			width: 100%;
@@ -59,20 +63,44 @@
 
 		/*8.1 翻转效果样式*/
 		.img-figure{
-			transform-style: preserve-3d;/*8.1.2 子元素（.img-back）将保留其3D位置*/
+			/*8.1.2 子元素（.img-back）将保留其3D位置*/
+			/*11.5 preserve-3d在IE下无效*/
+			transform-style: preserve-3d;
+			-webkit-transform-style: preserve-3d;
+			-o-transform-style: preserve-3d;
+			-moz-transform-style: preserve-3d;
+			-ms-transform-style: preserve-3d;
+
 			cursor: pointer;
 
 			/*10.1 动画的过渡属性*/
 			transition:left .6s ease-in-out,top .6s ease-in-out,transform .6s ease-in-out;
+			/*11.2 Safari不仅要设置-webkit-transition，还要设置-webkit-transform*/
+			-webkit-transition:left .6s ease-in-out,top .6s ease-in-out,-webkit-transform .6s ease-in-out;
+			-o-transition:left .6s ease-in-out,top .6s ease-in-out,transform .6s ease-in-out;
+			-moz-transition:left .6s ease-in-out,top .6s ease-in-out,transform .6s ease-in-out;
+			-ms-transition:left .6s ease-in-out,top .6s ease-in-out,transform .6s ease-in-out;
 
-			/*10.4 添加更立体的“倒”的效果=>改旋转原点+反面时平移回去
-			 *transform-origin设置旋转元素的基点位置，默认50% 50% 0
-			 *x=0 以y轴为轴 逆时针旋转
+			/*10.4 添加更立体的“倒”的效果=>改旋转原点+反面时平移“回去”
+			 *transform-origin设置旋转元素的基点位置，默认50% 50% *0，即元素的平面中心点，x=0时以y轴为轴（逆时针旋转）
 			 */
 			transform-origin: 0 50% 0;
+			-webkit-transform-origin: 0 50% 0;
+			-o-transform-origin: 0 50% 0;
+			-moz-transform-origin: 0 50% 0;
+			-ms-transform-origin: 0 50% 0;
 		}
 		.img-figure.is-inverse{
-			transform: translate(320px) rotateY(180deg);/*10.4.1 这两个顺序不一样，效果也会不一样*/
+			/*10.4.1 
+			 *transform的translate、rotate等值的顺序会影响变形的效果
+			 *transform: translate(320px) rotateY(180deg);与
+			 *transform: rotateY(180deg) translate(-320px);相同
+			 */
+			transform: translate(320px) rotateY(180deg);
+			-webkit-transform: translate(320px) rotateY(180deg);
+			-o-transform: translate(320px) rotateY(180deg);
+			-moz-transform: translate(320px) rotateY(180deg);
+			-ms-transform: translate(320px) rotateY(180deg);
 		}
 		.img-figure figcaption .img-back{
 			position: absolute;
@@ -90,9 +118,20 @@
             line-height: 1.25;
             text-align: left;
             background-color: #fff;
+            
+			/*8.1.1 "背面描述"的效果：沿着Y轴（竖轴）旋转180deg（将来父元素再旋转180deg变为正面） 并使用backface-visibility: hidden;隐藏后面元素*/
+			/*11.3 IE和Safari背面内容被转了180deg的正面内容挡住的情况，可以translateZ(1px)解决*/
+            transform: rotateY(180deg) translateZ(1px);
+            -webkit-transform: rotateY(180deg) translateZ(1px);
+			-o-transform: rotateY(180deg) translateZ(1px);
+			-moz-transform: rotateY(180deg) translateZ(1px);
+			-ms-transform: rotateY(180deg) translateZ(1px);
 
-            transform: rotateY(180deg);/*8.1.1 "背面描述"的效果 沿着Y轴（竖轴）旋转180deg*/
             backface-visibility: hidden;
+            -webkit-backface-visibility:hidden;
+            -o-backface-visibility:hidden;
+			-moz-backface-visibility:hidden; 
+			-ms-backface-visibility:hidden;
 		}
 		/*10 动画效果*/
 	</style>
@@ -164,7 +203,10 @@
 
 			// 10.2 图片载入时给一个初始的布局位置left:0,top:0
 			figuresArr.forEach(function(value){
-				value.style='left:0;top:0';
+				/*11.1 给style以字符串的方式赋值，IE和Safari无效
+				 *value.style='left:0;top:0';*/
+				value.style.left='0';
+				value.style.top='0';
 			});
 
 			return figuresArr;
@@ -236,9 +278,13 @@
 
 			// 9 设置图片的z-index值，使居中图片“领先”与其余图片。
 	    	/*Tip：z-index和transform用于改变元素的堆叠顺序，同时使用会让z-index失效*/
-			figuresCenterArr[0].style='left:'+centerLeft+'px;top:'+centerTop+'px;z-index:11';
-
-			/* 如下三种情况，行内样式赋值给一个对象（x）;赋值给字符串（√）；依次给属性赋值（√）。
+			figuresCenterArr[0].style.left=centerLeft+'px';
+			figuresCenterArr[0].style.top=centerTop+'px';
+			figuresCenterArr[0].style.zIndex=11;
+			figuresCenterArr[0].style.transform='';
+			figuresCenterArr[0].style.WebkitTransform='';
+			
+			/* 如下三种情况，行内样式赋值给一个对象（x）;赋值给字符串（x IE/Safari不能正确赋值）；依次给属性赋值（√）。
 			 * figuresCenterArr[0].style={
 			 * 	left:centerLeft+'px',
 			 * 	top:centerTop+'px'
@@ -260,7 +306,17 @@
 					topTop=getRangeRandom(constant.vPosRange.topY[0],constant.vPosRange.topY[1]),
 					topRotate=get30DegRandom();
 
-				figuresTopArr[index].style='left:'+topLeft+'px;top:'+topTop+'px;transform:rotate('+topRotate+'deg)';
+				figuresTopArr[index].style.left=topLeft+'px';
+				figuresTopArr[index].style.top=topTop+'px';
+				figuresTopArr[index].style.zIndex=''
+				figuresTopArr[index].style.transform='rotate('+topRotate+'deg)';
+				figuresTopArr[index].style.WebkitTransform='rotate('+topRotate+'deg)';
+				/*11.4 js脚本设置transform:rotate()需要针对Safari浏览器添加前缀 */
+
+				/*浏览器兼容性前缀
+				['MozTransform','msTransform','WebkitTransform'].forEach(function(profix){
+					figuresTopArr[index].style+=(profix+':rotate('+topRotate+'deg)');
+				});*/
 			});
 
 			// 左右两侧图片
@@ -274,7 +330,11 @@
 				}
 				asideRotate=get30DegRandom();
 
-				figuresArr[i].style='left:'+asideLeft+'px;top:'+asideTop+'px;transform:rotate('+asideRotate+'deg)';
+				figuresArr[i].style.left=asideLeft+'px';
+				figuresArr[i].style.top=asideTop+'px';
+				figuresArr[i].style.zIndex='';
+				figuresArr[i].style.transform='rotate('+asideRotate+'deg)';
+				figuresArr[i].style.WebkitTransform='rotate('+asideRotate+'deg)';
 			}
 
 			// “合并”所有图片
@@ -323,6 +383,7 @@
 	     	/*事件处理函数的默认参数是event，所以绑定事件监听时不能传入参数，如index，
 	     	 *index可以由array.indexOf(ele)获取
 	     	 */
+
 	    	var index=figuresArr.indexOf(this);
 
 	    	// 如果居中-->翻转
