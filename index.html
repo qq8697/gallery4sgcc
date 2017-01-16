@@ -244,7 +244,8 @@
 		
 		// 5.2 赋值真正的取值范围
 		// 5.2.1 获得stage和imgFigure的宽和高
-		var stageDom=document.getElementById("stage"),
+		function calculate(){
+			var stageDom=document.getElementById("stage"),
 			stageW=stageDom.scrollWidth,
 			stageH=stageDom.scrollHeight,
 			halfStageW=stageW/2,
@@ -256,21 +257,23 @@
 			halfimgFigureW=imgFigureW/2,
 			halfimgFigureH=imgFigureH/2;
 
-		// 5.2.2 计算可取值
-		constant.centerPos.left=halfStageW-halfimgFigureW;
-		constant.centerPos.top=halfStageH-halfimgFigureH;
+			// 5.2.2 计算可取值
+			constant.centerPos.left=halfStageW-halfimgFigureW;
+			constant.centerPos.top=halfStageH-halfimgFigureH;
 
-		constant.vPosRange.x[0]=halfStageW-imgFigureW;
-		constant.vPosRange.x[1]=halfStageW;
-		constant.vPosRange.topY[0]=-halfimgFigureH;
-		constant.vPosRange.topY[1]=halfStageH-halfimgFigureH*3
+			constant.vPosRange.x[0]=halfStageW-imgFigureW;
+			constant.vPosRange.x[1]=halfStageW;
+			constant.vPosRange.topY[0]=-halfimgFigureH;
+			constant.vPosRange.topY[1]=halfStageH-halfimgFigureH*3
 
-		constant.hPosRange.leftSecX[0]=-halfimgFigureW;
-		constant.hPosRange.leftSecX[1]=halfStageW-halfimgFigureW*3;
-		constant.hPosRange.rightSecX[0]=halfStageW+halfimgFigureW
-		constant.hPosRange.rightSecX[1]=stageW-halfimgFigureW;
-		constant.hPosRange.y[0]=-halfimgFigureH;
-		constant.hPosRange.y[1]=stageH-halfimgFigureH;
+			constant.hPosRange.leftSecX[0]=-halfimgFigureW;
+			constant.hPosRange.leftSecX[1]=halfStageW-halfimgFigureW*3;
+			constant.hPosRange.rightSecX[0]=halfStageW+halfimgFigureW
+			constant.hPosRange.rightSecX[1]=stageW-halfimgFigureW;
+			constant.hPosRange.y[0]=-halfimgFigureH;
+			constant.hPosRange.y[1]=stageH-halfimgFigureH;
+		}
+		calculate();
 		
 		/* 5.3 布局所有图片（figure）的函数
 		 * 需先执行一遍
@@ -442,6 +445,15 @@
 	    	 *figuresArr[index].isinverse=!figuresArr[index].isinverse
 	    	 */
 	    }
+	    // 12 窗口绑定resize事件
+	    window.addEventListener("resize",function(){
+	    	figuresArr.forEach(function(value,index){
+	    		if(value.getAttribute('iscenter')=='true'){
+	    			calculate();
+	    			rearrange(index);
+	    		}
+	    	})
+	    })
 	</script>
 </body>
 </html>
