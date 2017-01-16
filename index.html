@@ -2,6 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
 	<title>国网泰安第四期非电9班培训-画廊</title>
 	<link rel="stylesheet" type="text/css" href="css/normalize.css">
 	<style type="text/css">
@@ -179,6 +180,8 @@
 				var imgEle=document.createElement('img');
 				imgEle.src="images/"+imgData.fileName;
 				imgEle.title=imgData.title;
+				imgEle.width=240;
+				imgEle.height=240;
 
 				var figCapEle=document.createElement('figcaption');
 				var h2Ele=document.createElement('h2');
@@ -189,7 +192,13 @@
 				divEle.className="img-back";
 
 				var pEle=document.createElement('p');
-				pEle.innerText=imgData.desc;
+				if(imgData.desc.indexOf('<br>')!=-1){
+					imgData.desc.split('<br>').forEach(function(value){
+						pEle.innerHTML+=(value+'<br>');
+					});
+				}else{
+					pEle.innerHTML=imgData.desc;
+				}
 
 				divEle.appendChild(pEle);
 				figCapEle.appendChild(h2Ele);
